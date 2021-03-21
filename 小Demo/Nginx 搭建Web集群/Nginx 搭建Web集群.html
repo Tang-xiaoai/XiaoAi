@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/><meta name="exporter-version" content="Evernote Mac 9.1.0 (458321)"/><meta name="author" content="2539860406@qq.com"/><meta name="created" content="2020-12-06 06:16:17 +0000"/><meta name="source" content="desktop.mac"/><meta name="updated" content="2020-12-10 08:12:19 +0000"/><meta name="content-class" content="yinxiang.markdown"/><title>6.3 Nginx 搭建Web集群</title></head><body><div style="font-size: 14px; margin: 0; padding: 0; width: 100%;"><p style="line-height: 160%; box-sizing: content-box; margin: 10px 0; color: #333;">因为在同一台电脑里，虚拟机和主机间用了NAT连接模式<br/>
+Tomcat1 172.16.83.1<br/>
+Tomcat2 172.16.83.137<br/>
+Nginx  172.16.83.137</p>
+<p style="line-height: 160%; box-sizing: content-box; margin: 10px 0; color: #333;"><a href="https://www.cnblogs.com/i-tao/p/11295023.html" style="line-height: 160%; box-sizing: content-box; text-decoration: underline; color: #5286bc;">参考链接1</a></p>
+<p style="line-height: 160%; box-sizing: content-box; margin: 10px 0; color: #333;"><a href="https://blog.51cto.com/10316297/2132039" style="line-height: 160%; box-sizing: content-box; text-decoration: underline; color: #5286bc;">参考链接2</a></p>
+<p style="line-height: 160%; box-sizing: content-box; margin: 10px 0; color: #333;"><a href="https://www.cnblogs.com/springsnow/p/12206723.html#_label5_2" style="line-height: 160%; box-sizing: content-box; text-decoration: underline; color: #5286bc;">参考链接3</a></p>
+<p style="line-height: 160%; box-sizing: content-box; margin: 10px 0; color: #333;"><a href="https://blog.csdn.net/qappleh/article/details/89704387" style="line-height: 160%; box-sizing: content-box; text-decoration: underline; color: #5286bc;">502问题参考解决链接</a><br/>
+1.开启两个tomcat服务<br/>
+（1）Macbook主机上，新建了一个文件夹<br/>
+<code style="line-height: 160%; box-sizing: content-box; border: 0; border-radius: 0; color: #c1788b; padding: 4px 4px 2px 0; letter-spacing: -.3px;">/web/webapp</code><br/>
+里面新建了一个'index.jsp'文件，用来展现登录tomcat界面。<br/>
+index.jsp内容编辑为<br/>
+<img src="6.3%20Nginx%20%E6%90%AD%E5%BB%BAWeb%E9%9B%86%E7%BE%A4.resources/21E6EFDF-4EB7-4710-A4B9-AC1F5C1EFC88.png" height="308" width="1128"/></p>
+<p style="line-height: 160%; box-sizing: content-box; margin: 10px 0; color: #333;">（2）Ubuntu18.04虚拟机上新建了一个文件夹<br/>
+<code style="line-height: 160%; box-sizing: content-box; border: 0; border-radius: 0; color: #c1788b; padding: 4px 4px 2px 0; letter-spacing: -.3px;">/web/webapp</code><br/>
+里面新建了一个‘index.jsp’文件<br/>
+内容为<br/>
+<img src="6.3%20Nginx%20%E6%90%AD%E5%BB%BAWeb%E9%9B%86%E7%BE%A4.resources/07F9E622-7EE9-4D21-8EBA-3E2719304705.png" height="330" width="1230"/></p>
+<p style="line-height: 160%; box-sizing: content-box; margin: 10px 0; color: #333;">2.配置Nginx,将Nginx和Tomcat1、Tomcat2集成<br/>
+2.1修改<br/>
+在“/etc/nginx/nginx.conf<br/>
+”新增了64-83行<br/>
+<img src="6.3%20Nginx%20%E6%90%AD%E5%BB%BAWeb%E9%9B%86%E7%BE%A4.resources/5E4DA00D-4FD6-4AB2-8369-6EB503300D05.png" height="824" width="1242"/><br/>
+无法访问，原因可能是命名问题“tomcat_server”<br/>
+不要有server，改成"tomcat1"<br/>
+<img src="6.3%20Nginx%20%E6%90%AD%E5%BB%BAWeb%E9%9B%86%E7%BE%A4.resources/47C69877-E0D4-4B23-9AE0-AC873489EE90.png" height="900" width="1218"/><br/>
+2.2 关闭重启Nginx服务<br/>
+<code style="line-height: 160%; box-sizing: content-box; border: 0; border-radius: 0; color: #c1788b; padding: 4px 4px 2px 0; letter-spacing: -.3px;">service nginx stop service nginx start</code></p>
+<p style="line-height: 160%; box-sizing: content-box; margin: 10px 0; color: #333;">3.成功实现负载均衡<br/>
+在主机或虚拟机浏览器上输入负载均衡器的ip地址，即可实现访问切换。<br/>
+如<code style="line-height: 160%; box-sizing: content-box; border: 0; border-radius: 0; color: #c1788b; padding: 4px 4px 2px 0; letter-spacing: -.3px;">http://172.16.83.137</code><br/>
+<img src="6.3%20Nginx%20%E6%90%AD%E5%BB%BAWeb%E9%9B%86%E7%BE%A4.resources/6AFFD2FB-FC8A-4382-B4B9-C9001EF0DEB0.png" height="228" width="1720"/><br/>
+<img src="6.3%20Nginx%20%E6%90%AD%E5%BB%BAWeb%E9%9B%86%E7%BE%A4.resources/9EB0F387-B105-49AC-8D8E-FEC11359F106.png" height="182" width="1704"/></p>
+<p style="line-height: 160%; box-sizing: content-box; margin: 10px 0; color: #333;">4.负载均衡其他可选参数配置</p>
+<pre style="line-height: 160%; box-sizing: content-box; border: 0; border-radius: 0; margin: 2px 0 8px; background-color: #f5f7f8;"><code style="display: block; overflow-x: auto; background: #1e1e1e; line-height: 160%; box-sizing: content-box; border: 0; border-radius: 0; letter-spacing: -.3px; padding: 18px; color: #f4f4f4; white-space: pre-wrap;">upstream tomcat1 {
+ip_hash; #缺省，策略为轮询；ip_hash依据ip的分配，确保了相同客户端发送到同一服务器，保证session会话；least_conn最少连接，把请求发给连接最少的后端服务器。
+server 192.168.43.191:80 weight=2; #weight表权重，表示负载将何种比例向后端服务器转发
+server 192.168.43.89:8080 weight=1;
+server 192.168.43.213:8080 backup; #热备
+}
+
+server {
+listen 80; #监听Nginx的端口，Nginx默认是80
+server_name 192.168.43.2; #监听地址，即访问这个网址的请求会被接收。用server_name 什么域名 192.168.43.2，与域名联系
+
+location / { #代表这是项目根目录
+# root path; #根目录
+# index index.html index.htm; #设置默认页
+proxy_pass http://tomcat1; #请求转向tomcat1定义的服务器列表
+# deny 127.0.0.1; # 拒绝的ip
+# allow 172.18.5.54; #允许的ip
+}
+</code></pre>
+<p style="line-height: 160%; box-sizing: content-box; margin: 10px 0; color: #333;">扩展问题：<br/>
+1.监听域名，指定页面怎么设置；<br/>
+2.如何将tomcat服务器与mysql相连，客户访问能相应地从数据库中读取</p>
+</div><center style="display:none !important;visibility:collapse !important;height:0 !important;white-space:nowrap;width:100%;overflow:hidden">%E5%9B%A0%E4%B8%BA%E5%9C%A8%E5%90%8C%E4%B8%80%E5%8F%B0%E7%94%B5%E8%84%91%E9%87%8C%EF%BC%8C%E8%99%9A%E6%8B%9F%E6%9C%BA%E5%92%8C%E4%B8%BB%E6%9C%BA%E9%97%B4%E7%94%A8%E4%BA%86NAT%E8%BF%9E%E6%8E%A5%E6%A8%A1%E5%BC%8F%0ATomcat1%20172.16.83.1%0ATomcat2%20172.16.83.137%0ANginx%20%20172.16.83.137%0A%0A%5B%E5%8F%82%E8%80%83%E9%93%BE%E6%8E%A51%5D(https%3A%2F%2Fwww.cnblogs.com%2Fi-tao%2Fp%2F11295023.html)%0A%5B%E5%8F%82%E8%80%83%E9%93%BE%E6%8E%A52%5D(https%3A%2F%2Fblog.51cto.com%2F10316297%2F2132039)%0A%5B%E5%8F%82%E8%80%83%E9%93%BE%E6%8E%A53%5D(https%3A%2F%2Fwww.cnblogs.com%2Fspringsnow%2Fp%2F12206723.html%23_label5_2)%0A%5B502%E9%97%AE%E9%A2%98%E5%8F%82%E8%80%83%E8%A7%A3%E5%86%B3%E9%93%BE%E6%8E%A5%5D(https%3A%2F%2Fblog.csdn.net%2Fqappleh%2Farticle%2Fdetails%2F89704387)%0A1.%E5%BC%80%E5%90%AF%E4%B8%A4%E4%B8%AAtomcat%E6%9C%8D%E5%8A%A1%0A%EF%BC%881%EF%BC%89Macbook%E4%B8%BB%E6%9C%BA%E4%B8%8A%EF%BC%8C%E6%96%B0%E5%BB%BA%E4%BA%86%E4%B8%80%E4%B8%AA%E6%96%87%E4%BB%B6%E5%A4%B9%0A%60%2Fweb%2Fwebapp%60%0A%E9%87%8C%E9%9D%A2%E6%96%B0%E5%BB%BA%E4%BA%86%E4%B8%80%E4%B8%AA'index.jsp'%E6%96%87%E4%BB%B6%EF%BC%8C%E7%94%A8%E6%9D%A5%E5%B1%95%E7%8E%B0%E7%99%BB%E5%BD%95tomcat%E7%95%8C%E9%9D%A2%E3%80%82%0Aindex.jsp%E5%86%85%E5%AE%B9%E7%BC%96%E8%BE%91%E4%B8%BA%0A!%5B5d3e2457df9a169c1565d3038061ab44.png%5D(evernotecid%3A%2F%2F0DB776D5-CFCE-4151-982A-C6EAEDC3EFEF%2Fappyinxiangcom%2F25749707%2FENResource%2Fp860)%0A%0A%EF%BC%882%EF%BC%89Ubuntu18.04%E8%99%9A%E6%8B%9F%E6%9C%BA%E4%B8%8A%E6%96%B0%E5%BB%BA%E4%BA%86%E4%B8%80%E4%B8%AA%E6%96%87%E4%BB%B6%E5%A4%B9%0A%60%2Fweb%2Fwebapp%60%0A%E9%87%8C%E9%9D%A2%E6%96%B0%E5%BB%BA%E4%BA%86%E4%B8%80%E4%B8%AA%E2%80%98index.jsp%E2%80%99%E6%96%87%E4%BB%B6%0A%E5%86%85%E5%AE%B9%E4%B8%BA%0A!%5B97f1691fea9c8c8e6a0e9126a8fbd8e2.png%5D(evernotecid%3A%2F%2F0DB776D5-CFCE-4151-982A-C6EAEDC3EFEF%2Fappyinxiangcom%2F25749707%2FENResource%2Fp861)%0A%0A2.%E9%85%8D%E7%BD%AENginx%2C%E5%B0%86Nginx%E5%92%8CTomcat1%E3%80%81Tomcat2%E9%9B%86%E6%88%90%0A2.1%E4%BF%AE%E6%94%B9%0A%E5%9C%A8%E2%80%9C%2Fetc%2Fnginx%2Fnginx.conf%0A%E2%80%9D%E6%96%B0%E5%A2%9E%E4%BA%8664-83%E8%A1%8C%0A!%5B0b4a10e303aefd315bbab37610b0bcb9.png%5D(evernotecid%3A%2F%2F0DB776D5-CFCE-4151-982A-C6EAEDC3EFEF%2Fappyinxiangcom%2F25749707%2FENResource%2Fp867)%0A%E6%97%A0%E6%B3%95%E8%AE%BF%E9%97%AE%EF%BC%8C%E5%8E%9F%E5%9B%A0%E5%8F%AF%E8%83%BD%E6%98%AF%E5%91%BD%E5%90%8D%E9%97%AE%E9%A2%98%E2%80%9Ctomcat_server%E2%80%9D%0A%E4%B8%8D%E8%A6%81%E6%9C%89server%EF%BC%8C%E6%94%B9%E6%88%90%22tomcat1%22%0A!%5B35b4ecba378156619e1739a25b2b53ca.png%5D(evernotecid%3A%2F%2F0DB776D5-CFCE-4151-982A-C6EAEDC3EFEF%2Fappyinxiangcom%2F25749707%2FENResource%2Fp870)%0A2.2%20%E5%85%B3%E9%97%AD%E9%87%8D%E5%90%AFNginx%E6%9C%8D%E5%8A%A1%0A%60service%20nginx%20stop%0Aservice%20nginx%20start%0A%60%0A%0A3.%E6%88%90%E5%8A%9F%E5%AE%9E%E7%8E%B0%E8%B4%9F%E8%BD%BD%E5%9D%87%E8%A1%A1%0A%E5%9C%A8%E4%B8%BB%E6%9C%BA%E6%88%96%E8%99%9A%E6%8B%9F%E6%9C%BA%E6%B5%8F%E8%A7%88%E5%99%A8%E4%B8%8A%E8%BE%93%E5%85%A5%E8%B4%9F%E8%BD%BD%E5%9D%87%E8%A1%A1%E5%99%A8%E7%9A%84ip%E5%9C%B0%E5%9D%80%EF%BC%8C%E5%8D%B3%E5%8F%AF%E5%AE%9E%E7%8E%B0%E8%AE%BF%E9%97%AE%E5%88%87%E6%8D%A2%E3%80%82%0A%E5%A6%82%60http%3A%2F%2F172.16.83.137%60%0A!%5B3d2f0440ad9df90223701f40ac7fb7a3.png%5D(evernotecid%3A%2F%2F0DB776D5-CFCE-4151-982A-C6EAEDC3EFEF%2Fappyinxiangcom%2F25749707%2FENResource%2Fp871)%0A!%5B90d0a819af9483256ca7fa5b81fe430e.png%5D(evernotecid%3A%2F%2F0DB776D5-CFCE-4151-982A-C6EAEDC3EFEF%2Fappyinxiangcom%2F25749707%2FENResource%2Fp875)%0A%0A4.%E8%B4%9F%E8%BD%BD%E5%9D%87%E8%A1%A1%E5%85%B6%E4%BB%96%E5%8F%AF%E9%80%89%E5%8F%82%E6%95%B0%E9%85%8D%E7%BD%AE%0A%60%60%60%20%0Aupstream%20tomcat1%20%7B%0Aip_hash%3B%20%23%E7%BC%BA%E7%9C%81%EF%BC%8C%E7%AD%96%E7%95%A5%E4%B8%BA%E8%BD%AE%E8%AF%A2%EF%BC%9Bip_hash%E4%BE%9D%E6%8D%AEip%E7%9A%84%E5%88%86%E9%85%8D%EF%BC%8C%E7%A1%AE%E4%BF%9D%E4%BA%86%E7%9B%B8%E5%90%8C%E5%AE%A2%E6%88%B7%E7%AB%AF%E5%8F%91%E9%80%81%E5%88%B0%E5%90%8C%E4%B8%80%E6%9C%8D%E5%8A%A1%E5%99%A8%EF%BC%8C%E4%BF%9D%E8%AF%81session%E4%BC%9A%E8%AF%9D%EF%BC%9Bleast_conn%E6%9C%80%E5%B0%91%E8%BF%9E%E6%8E%A5%EF%BC%8C%E6%8A%8A%E8%AF%B7%E6%B1%82%E5%8F%91%E7%BB%99%E8%BF%9E%E6%8E%A5%E6%9C%80%E5%B0%91%E7%9A%84%E5%90%8E%E7%AB%AF%E6%9C%8D%E5%8A%A1%E5%99%A8%E3%80%82%0Aserver%20192.168.43.191%3A80%20weight%3D2%3B%20%23weight%E8%A1%A8%E6%9D%83%E9%87%8D%EF%BC%8C%E8%A1%A8%E7%A4%BA%E8%B4%9F%E8%BD%BD%E5%B0%86%E4%BD%95%E7%A7%8D%E6%AF%94%E4%BE%8B%E5%90%91%E5%90%8E%E7%AB%AF%E6%9C%8D%E5%8A%A1%E5%99%A8%E8%BD%AC%E5%8F%91%0Aserver%20192.168.43.89%3A8080%20weight%3D1%3B%0Aserver%20192.168.43.213%3A8080%20backup%3B%20%23%E7%83%AD%E5%A4%87%0A%7D%0A%0Aserver%20%7B%0Alisten%2080%3B%20%23%E7%9B%91%E5%90%ACNginx%E7%9A%84%E7%AB%AF%E5%8F%A3%EF%BC%8CNginx%E9%BB%98%E8%AE%A4%E6%98%AF80%0Aserver_name%20192.168.43.2%3B%20%23%E7%9B%91%E5%90%AC%E5%9C%B0%E5%9D%80%EF%BC%8C%E5%8D%B3%E8%AE%BF%E9%97%AE%E8%BF%99%E4%B8%AA%E7%BD%91%E5%9D%80%E7%9A%84%E8%AF%B7%E6%B1%82%E4%BC%9A%E8%A2%AB%E6%8E%A5%E6%94%B6%E3%80%82%E7%94%A8server_name%20%E4%BB%80%E4%B9%88%E5%9F%9F%E5%90%8D%20192.168.43.2%EF%BC%8C%E4%B8%8E%E5%9F%9F%E5%90%8D%E8%81%94%E7%B3%BB%0A%0Alocation%20%2F%20%7B%20%23%E4%BB%A3%E8%A1%A8%E8%BF%99%E6%98%AF%E9%A1%B9%E7%9B%AE%E6%A0%B9%E7%9B%AE%E5%BD%95%0A%23%20root%20path%3B%20%23%E6%A0%B9%E7%9B%AE%E5%BD%95%0A%23%20index%20index.html%20index.htm%3B%20%23%E8%AE%BE%E7%BD%AE%E9%BB%98%E8%AE%A4%E9%A1%B5%0Aproxy_pass%20http%3A%2F%2Ftomcat1%3B%20%23%E8%AF%B7%E6%B1%82%E8%BD%AC%E5%90%91tomcat1%E5%AE%9A%E4%B9%89%E7%9A%84%E6%9C%8D%E5%8A%A1%E5%99%A8%E5%88%97%E8%A1%A8%0A%23%20deny%20127.0.0.1%3B%20%23%20%E6%8B%92%E7%BB%9D%E7%9A%84ip%0A%23%20allow%20172.18.5.54%3B%20%23%E5%85%81%E8%AE%B8%E7%9A%84ip%0A%7D%0A%60%60%60%0A%0A%E6%89%A9%E5%B1%95%E9%97%AE%E9%A2%98%EF%BC%9A%0A1.%E7%9B%91%E5%90%AC%E5%9F%9F%E5%90%8D%EF%BC%8C%E6%8C%87%E5%AE%9A%E9%A1%B5%E9%9D%A2%E6%80%8E%E4%B9%88%E8%AE%BE%E7%BD%AE%EF%BC%9B%0A2.%E5%A6%82%E4%BD%95%E5%B0%86tomcat%E6%9C%8D%E5%8A%A1%E5%99%A8%E4%B8%8Emysql%E7%9B%B8%E8%BF%9E%EF%BC%8C%E5%AE%A2%E6%88%B7%E8%AE%BF%E9%97%AE%E8%83%BD%E7%9B%B8%E5%BA%94%E5%9C%B0%E4%BB%8E%E6%95%B0%E6%8D%AE%E5%BA%93%E4%B8%AD%E8%AF%BB%E5%8F%96%E8%B5%84%E6%BA%90%E3%80%82%0A%0A%0A</center></body></html>

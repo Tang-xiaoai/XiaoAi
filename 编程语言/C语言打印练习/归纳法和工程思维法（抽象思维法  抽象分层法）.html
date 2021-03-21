@@ -1,0 +1,205 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/><meta name="exporter-version" content="Evernote Mac 9.4.8 (461813)"/><meta name="author" content="2539860406@qq.com"/><meta name="created" content="2020-12-19 08:02:58 +0000"/><meta name="source" content="desktop.mac"/><meta name="updated" content="2020-12-19 10:12:16 +0000"/><meta name="content-class" content="yinxiang.markdown"/><title>8.1 归纳法和工程思维法（抽象思维法  抽象分层法）</title></head><body><div style="font-size: 14px; margin: 0; padding: 0; width: 100%;"><p style="line-height: 160%; box-sizing: content-box; margin: 10px 0; color: #333;">C程序编写，用*打印出：矩形、空心矩形、等腰三角形、"回"字。</p>
+<p style="line-height: 160%; box-sizing: content-box; margin: 10px 0; color: #333;">野生程序</p>
+<pre style="line-height: 160%; box-sizing: content-box; border: 0; border-radius: 0; margin: 2px 0 8px; background-color: #f5f7f8;"><code style="display: block; overflow-x: auto; background: #1e1e1e; line-height: 160%; box-sizing: content-box; border: 0; border-radius: 0; letter-spacing: -.3px; padding: 18px; color: #f4f4f4; white-space: pre-wrap;">#include &lt;stdio.h&gt;
+
+//打印*矩形
+void p_rect(int a,int b){ 
+    for(int i =0; i &lt; a;i++){
+        for(int j = 0;j &lt; b;j++){
+            printf("*");
+        }   
+        printf("\n");
+    }   
+}
+
+//打印*等腰三角形
+void p_isoTri(int y){ 
+    for(int i = 0;i &lt; y ;i++){
+        for(int j = 0; j &lt; y-i-1;j++){
+            printf(" ");
+        }   
+        for(int j = 1; j &lt; 2*(i+1);j++){
+            printf("*");
+        }   
+        printf("\n");
+    }   
+}
+
+//打印*空心矩形
+void p_holRect(int r,int c){ 
+    for(int i = 0;i &lt; r;i++){
+        if(0 == i || r-1 == i){ 
+            for(int k = 0;k &lt; c ;k++){
+                printf("*");
+            }
+            printf("\n");
+        }else{
+            for(int j = 0;j&lt;c;j++){
+                if(0==j || c-1 ==j)
+                    printf("*");
+                else
+                    printf(" ");
+            }
+            printf("\n");
+        }
+    }
+}
+
+//打印*“回”字
+void p_hui(int r,int c){
+    for(int i = 0;i &lt; r;i++){
+        if(0 == i || r-1 == i){
+            for(int j = 0;j &lt; c ;j ++){
+                printf("*");
+            }
+            printf("\n");
+        }else if(1 == i || r-2 == i){
+            printf("* ");
+            for(int j = 2;j &lt; c-2;j ++){
+                printf("*");
+            }
+            printf(" *\n");
+        }else if(2 == i || r-3 == i){
+            printf("* *");
+            for(int j = 4;j &lt; c-2;j++){
+                printf(" ");
+            }
+            printf("* *\n");
+        }
+    }
+}
+
+int main(){
+        p_rect(5,6);
+        printf("-------\n");
+        p_isoTri(5);
+        printf("-------\n");
+        p_holRect(5,6);
+        printf("-------\n");
+        p_hui(8,8);
+        return 0;
+}
+</code></pre>
+<p style="line-height: 160%; box-sizing: content-box; margin: 10px 0; color: #333;">程序输出结果图：<br/>
+<img src="8.1%20%E5%BD%92%E7%BA%B3%E6%B3%95%E5%92%8C%E5%B7%A5%E7%A8%8B%E6%80%9D%E7%BB%B4%E6%B3%95%EF%BC%88%E6%8A%BD%E8%B1%A1%E6%80%9D%E7%BB%B4%E6%B3%95%20%20%E6%8A%BD%E8%B1%A1%E5%88%86%E5%B1%82%E6%B3%95%EF%BC%89.resources/1731164C-B0C2-4D96-830D-8788D963F063.png" height="904" width="200"/></p>
+<p style="line-height: 160%; box-sizing: content-box; margin: 10px 0; color: #333;">经过优化：</p>
+<pre style="line-height: 160%; box-sizing: content-box; border: 0; border-radius: 0; margin: 2px 0 8px; background-color: #f5f7f8;"><code style="display: block; overflow-x: auto; background: #1e1e1e; line-height: 160%; box-sizing: content-box; border: 0; border-radius: 0; letter-spacing: -.3px; padding: 18px; color: #f4f4f4; white-space: pre-wrap;"># include&lt;stdio.h&gt;
+
+//Print a char row.
+void p_char(int n,char ch){
+	for(int i = 0;i &lt; n;i++){
+		printf("%c",ch);
+	}
+}
+
+//Print a line feed.
+void p_enter(){
+	printf("\n");
+}
+
+//Print a rectangle.
+void p_rect(int r,int c,char ch){
+	for(int i = 0; i &lt; r;i++){
+		p_char(c,ch);
+		p_enter();
+	}
+}
+
+//Print equicrural trapezoid. Also it can print equicrural triangle,when a=1.
+//c=2*N+a
+void p_equTra(int a,int c,char ch){
+	for(int i = 0;i &lt; 1 + (c-a)/2;i++){
+		p_char((c-a)/2-i,' ');
+		p_char(2*i+a,ch);
+		p_enter();
+	}
+}
+
+//Print a diamond.
+//l=2*N+1
+void p_diamond(int l,char ch){
+	for(int i = 0;i &lt; l/2;i++){
+		p_char((l-1)/2-i,' ');
+		p_char(i*2+1,ch);
+		p_enter();
+	}
+	for(int i = l/2;i &gt;= 0;i--){
+		p_char((l-1)/2-i,' ');
+		p_char(i*2+1,ch);
+		p_enter();
+	}
+}
+
+//Print a hollow rectangle.
+//r&gt;3 &amp;&amp; c&gt;3
+void p_holRect(int r,int c,int ch){
+	for(int i = 0; i &lt; r;i++){
+		if(0 == i || r-1 == i){
+			p_char(c,ch);
+			p_enter();
+		}else{
+			p_char(1,ch);
+			p_char(c-2,' ');
+			p_char(1,ch);
+			p_enter();
+		}
+	}
+}
+
+//Print 回.
+//r&gt;7 &amp;&amp; c&gt;7
+void p_hui(int r,int c,char ch){
+	for(int i = 0; i &lt; r;i++){
+		if(0 == i || r-1 == i){
+			p_char(c,ch);
+			p_enter();
+		}else if(1 == i || r-2 == i){
+			p_char(1,ch);
+			p_char(c-2,' ');
+			p_char(1,ch);
+			p_enter();
+		}else if (2 == i || r-3 == i){
+			p_char(1,ch);
+			p_char(1,' ');
+			p_char(c-4,ch);
+			p_char(1,' ');
+			p_char(1,ch);
+			p_enter();
+		}else{
+			p_char(1,ch);
+			p_char(1,' ');
+			p_char(1,ch);
+			p_char(c-6,' ');
+			p_char(1,ch);
+			p_char(1,' ');
+			p_char(1,ch);
+			p_enter();
+		}
+	}	
+}
+
+int main(){
+	p_char(12,'-');
+	p_enter();
+	p_rect(3,4,'#');
+	p_char(12,'-');
+	p_enter();
+	p_equTra(1,5,'#');
+	p_char(12,'-');
+	p_enter();
+	p_diamond(5,'#');
+	p_char(12,'-');
+	p_enter();
+	p_holRect(3,4,'#');
+	p_char(12,'-');
+	p_enter();
+	p_hui(7,10,'#');
+	p_char(12,'-');
+	p_enter();
+	
+}
+</code></pre>
+<p style="line-height: 160%; box-sizing: content-box; margin: 10px 0; color: #333;"><img src="8.1%20%E5%BD%92%E7%BA%B3%E6%B3%95%E5%92%8C%E5%B7%A5%E7%A8%8B%E6%80%9D%E7%BB%B4%E6%B3%95%EF%BC%88%E6%8A%BD%E8%B1%A1%E6%80%9D%E7%BB%B4%E6%B3%95%20%20%E6%8A%BD%E8%B1%A1%E5%88%86%E5%B1%82%E6%B3%95%EF%BC%89.resources/BDE748A7-6A5B-4450-A958-E74A6B865BF8.png" height="732" width="204"/></p>
+</div><center style="display:none !important;visibility:collapse !important;height:0 !important;white-space:nowrap;width:100%;overflow:hidden">C%E7%A8%8B%E5%BA%8F%E7%BC%96%E5%86%99%EF%BC%8C%E7%94%A8%5C*%E6%89%93%E5%8D%B0%E5%87%BA%EF%BC%9A%E7%9F%A9%E5%BD%A2%E3%80%81%E7%A9%BA%E5%BF%83%E7%9F%A9%E5%BD%A2%E3%80%81%E7%AD%89%E8%85%B0%E4%B8%89%E8%A7%92%E5%BD%A2%E3%80%81%22%E5%9B%9E%22%E5%AD%97%E3%80%82%0A%0A%E9%87%8E%E7%94%9F%E7%A8%8B%E5%BA%8F%0A%60%60%60%0A%23include%20%3Cstdio.h%3E%0A%0A%2F%2F%E6%89%93%E5%8D%B0*%E7%9F%A9%E5%BD%A2%0Avoid%20p_rect(int%20a%2Cint%20b)%7B%20%0A%20%20%20%20for(int%20i%20%3D0%3B%20i%20%3C%20a%3Bi%2B%2B)%7B%0A%20%20%20%20%20%20%20%20for(int%20j%20%3D%200%3Bj%20%3C%20b%3Bj%2B%2B)%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20printf(%22*%22)%3B%0A%20%20%20%20%20%20%20%20%7D%20%20%20%0A%20%20%20%20%20%20%20%20printf(%22%5Cn%22)%3B%0A%20%20%20%20%7D%20%20%20%0A%7D%0A%0A%2F%2F%E6%89%93%E5%8D%B0*%E7%AD%89%E8%85%B0%E4%B8%89%E8%A7%92%E5%BD%A2%0Avoid%20p_isoTri(int%20y)%7B%20%0A%20%20%20%20for(int%20i%20%3D%200%3Bi%20%3C%20y%20%3Bi%2B%2B)%7B%0A%20%20%20%20%20%20%20%20for(int%20j%20%3D%200%3B%20j%20%3C%20y-i-1%3Bj%2B%2B)%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20printf(%22%20%22)%3B%0A%20%20%20%20%20%20%20%20%7D%20%20%20%0A%20%20%20%20%20%20%20%20for(int%20j%20%3D%201%3B%20j%20%3C%202*(i%2B1)%3Bj%2B%2B)%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20printf(%22*%22)%3B%0A%20%20%20%20%20%20%20%20%7D%20%20%20%0A%20%20%20%20%20%20%20%20printf(%22%5Cn%22)%3B%0A%20%20%20%20%7D%20%20%20%0A%7D%0A%0A%2F%2F%E6%89%93%E5%8D%B0*%E7%A9%BA%E5%BF%83%E7%9F%A9%E5%BD%A2%0Avoid%20p_holRect(int%20r%2Cint%20c)%7B%20%0A%20%20%20%20for(int%20i%20%3D%200%3Bi%20%3C%20r%3Bi%2B%2B)%7B%0A%20%20%20%20%20%20%20%20if(0%20%3D%3D%20i%20%7C%7C%20r-1%20%3D%3D%20i)%7B%20%0A%20%20%20%20%20%20%20%20%20%20%20%20for(int%20k%20%3D%200%3Bk%20%3C%20c%20%3Bk%2B%2B)%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20printf(%22*%22)%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20%7D%0A%20%20%20%20%20%20%20%20%20%20%20%20printf(%22%5Cn%22)%3B%0A%20%20%20%20%20%20%20%20%7Delse%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20for(int%20j%20%3D%200%3Bj%3Cc%3Bj%2B%2B)%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20if(0%3D%3Dj%20%7C%7C%20c-1%20%3D%3Dj)%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20printf(%22*%22)%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20else%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20printf(%22%20%22)%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20%7D%0A%20%20%20%20%20%20%20%20%20%20%20%20printf(%22%5Cn%22)%3B%0A%20%20%20%20%20%20%20%20%7D%0A%20%20%20%20%7D%0A%7D%0A%0A%2F%2F%E6%89%93%E5%8D%B0*%E2%80%9C%E5%9B%9E%E2%80%9D%E5%AD%97%0Avoid%20p_hui(int%20r%2Cint%20c)%7B%0A%20%20%20%20for(int%20i%20%3D%200%3Bi%20%3C%20r%3Bi%2B%2B)%7B%0A%20%20%20%20%20%20%20%20if(0%20%3D%3D%20i%20%7C%7C%20r-1%20%3D%3D%20i)%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20for(int%20j%20%3D%200%3Bj%20%3C%20c%20%3Bj%20%2B%2B)%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20printf(%22*%22)%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20%7D%0A%20%20%20%20%20%20%20%20%20%20%20%20printf(%22%5Cn%22)%3B%0A%20%20%20%20%20%20%20%20%7Delse%20if(1%20%3D%3D%20i%20%7C%7C%20r-2%20%3D%3D%20i)%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20printf(%22*%20%22)%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20for(int%20j%20%3D%202%3Bj%20%3C%20c-2%3Bj%20%2B%2B)%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20printf(%22*%22)%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20%7D%0A%20%20%20%20%20%20%20%20%20%20%20%20printf(%22%20*%5Cn%22)%3B%0A%20%20%20%20%20%20%20%20%7Delse%20if(2%20%3D%3D%20i%20%7C%7C%20r-3%20%3D%3D%20i)%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20printf(%22*%20*%22)%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20for(int%20j%20%3D%204%3Bj%20%3C%20c-2%3Bj%2B%2B)%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20printf(%22%20%22)%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20%7D%0A%20%20%20%20%20%20%20%20%20%20%20%20printf(%22*%20*%5Cn%22)%3B%0A%20%20%20%20%20%20%20%20%7D%0A%20%20%20%20%7D%0A%7D%0A%0Aint%20main()%7B%0A%20%20%20%20%20%20%20%20p_rect(5%2C6)%3B%0A%20%20%20%20%20%20%20%20printf(%22-------%5Cn%22)%3B%0A%20%20%20%20%20%20%20%20p_isoTri(5)%3B%0A%20%20%20%20%20%20%20%20printf(%22-------%5Cn%22)%3B%0A%20%20%20%20%20%20%20%20p_holRect(5%2C6)%3B%0A%20%20%20%20%20%20%20%20printf(%22-------%5Cn%22)%3B%0A%20%20%20%20%20%20%20%20p_hui(8%2C8)%3B%0A%20%20%20%20%20%20%20%20return%200%3B%0A%7D%0A%60%60%60%0A%E7%A8%8B%E5%BA%8F%E8%BE%93%E5%87%BA%E7%BB%93%E6%9E%9C%E5%9B%BE%EF%BC%9A%0A!%5B2121999568a2fab44b2446587a98db28.png%5D(evernotecid%3A%2F%2F0DB776D5-CFCE-4151-982A-C6EAEDC3EFEF%2Fappyinxiangcom%2F25749707%2FENResource%2Fp985)%0A%0A%E7%BB%8F%E8%BF%87%E4%BC%98%E5%8C%96%EF%BC%9A%0A%60%60%60%0A%23%20include%3Cstdio.h%3E%0A%0A%2F%2FPrint%20a%20char%20row.%0Avoid%20p_char(int%20n%2Cchar%20ch)%7B%0A%09for(int%20i%20%3D%200%3Bi%20%3C%20n%3Bi%2B%2B)%7B%0A%09%09printf(%22%25c%22%2Cch)%3B%0A%09%7D%0A%7D%0A%0A%2F%2FPrint%20a%20line%20feed.%0Avoid%20p_enter()%7B%0A%09printf(%22%5Cn%22)%3B%0A%7D%0A%0A%2F%2FPrint%20a%20rectangle.%0Avoid%20p_rect(int%20r%2Cint%20c%2Cchar%20ch)%7B%0A%09for(int%20i%20%3D%200%3B%20i%20%3C%20r%3Bi%2B%2B)%7B%0A%09%09p_char(c%2Cch)%3B%0A%09%09p_enter()%3B%0A%09%7D%0A%7D%0A%0A%2F%2FPrint%20equicrural%20trapezoid.%20Also%20it%20can%20print%20equicrural%20triangle%2Cwhen%20a%3D1.%0A%2F%2Fc%3D2*N%2Ba%0Avoid%20p_equTra(int%20a%2Cint%20c%2Cchar%20ch)%7B%0A%09for(int%20i%20%3D%200%3Bi%20%3C%201%20%2B%20(c-a)%2F2%3Bi%2B%2B)%7B%0A%09%09p_char((c-a)%2F2-i%2C'%20')%3B%0A%09%09p_char(2*i%2Ba%2Cch)%3B%0A%09%09p_enter()%3B%0A%09%7D%0A%7D%0A%0A%2F%2FPrint%20a%20diamond.%0A%2F%2Fl%3D2*N%2B1%0Avoid%20p_diamond(int%20l%2Cchar%20ch)%7B%0A%09for(int%20i%20%3D%200%3Bi%20%3C%20l%2F2%3Bi%2B%2B)%7B%0A%09%09p_char((l-1)%2F2-i%2C'%20')%3B%0A%09%09p_char(i*2%2B1%2Cch)%3B%0A%09%09p_enter()%3B%0A%09%7D%0A%09for(int%20i%20%3D%20l%2F2%3Bi%20%3E%3D%200%3Bi--)%7B%0A%09%09p_char((l-1)%2F2-i%2C'%20')%3B%0A%09%09p_char(i*2%2B1%2Cch)%3B%0A%09%09p_enter()%3B%0A%09%7D%0A%7D%0A%0A%2F%2FPrint%20a%20hollow%20rectangle.%0A%2F%2Fr%3E3%20%26%26%20c%3E3%0Avoid%20p_holRect(int%20r%2Cint%20c%2Cint%20ch)%7B%0A%09for(int%20i%20%3D%200%3B%20i%20%3C%20r%3Bi%2B%2B)%7B%0A%09%09if(0%20%3D%3D%20i%20%7C%7C%20r-1%20%3D%3D%20i)%7B%0A%09%09%09p_char(c%2Cch)%3B%0A%09%09%09p_enter()%3B%0A%09%09%7Delse%7B%0A%09%09%09p_char(1%2Cch)%3B%0A%09%09%09p_char(c-2%2C'%20')%3B%0A%09%09%09p_char(1%2Cch)%3B%0A%09%09%09p_enter()%3B%0A%09%09%7D%0A%09%7D%0A%7D%0A%0A%2F%2FPrint%20%E5%9B%9E.%0A%2F%2Fr%3E7%20%26%26%20c%3E7%0Avoid%20p_hui(int%20r%2Cint%20c%2Cchar%20ch)%7B%0A%09for(int%20i%20%3D%200%3B%20i%20%3C%20r%3Bi%2B%2B)%7B%0A%09%09if(0%20%3D%3D%20i%20%7C%7C%20r-1%20%3D%3D%20i)%7B%0A%09%09%09p_char(c%2Cch)%3B%0A%09%09%09p_enter()%3B%0A%09%09%7Delse%20if(1%20%3D%3D%20i%20%7C%7C%20r-2%20%3D%3D%20i)%7B%0A%09%09%09p_char(1%2Cch)%3B%0A%09%09%09p_char(c-2%2C'%20')%3B%0A%09%09%09p_char(1%2Cch)%3B%0A%09%09%09p_enter()%3B%0A%09%09%7Delse%20if%20(2%20%3D%3D%20i%20%7C%7C%20r-3%20%3D%3D%20i)%7B%0A%09%09%09p_char(1%2Cch)%3B%0A%09%09%09p_char(1%2C'%20')%3B%0A%09%09%09p_char(c-4%2Cch)%3B%0A%09%09%09p_char(1%2C'%20')%3B%0A%09%09%09p_char(1%2Cch)%3B%0A%09%09%09p_enter()%3B%0A%09%09%7Delse%7B%0A%09%09%09p_char(1%2Cch)%3B%0A%09%09%09p_char(1%2C'%20')%3B%0A%09%09%09p_char(1%2Cch)%3B%0A%09%09%09p_char(c-6%2C'%20')%3B%0A%09%09%09p_char(1%2Cch)%3B%0A%09%09%09p_char(1%2C'%20')%3B%0A%09%09%09p_char(1%2Cch)%3B%0A%09%09%09p_enter()%3B%0A%09%09%7D%0A%09%7D%09%0A%7D%0A%0Aint%20main()%7B%0A%09p_char(12%2C'-')%3B%0A%09p_enter()%3B%0A%09p_rect(3%2C4%2C'%23')%3B%0A%09p_char(12%2C'-')%3B%0A%09p_enter()%3B%0A%09p_equTra(1%2C5%2C'%23')%3B%0A%09p_char(12%2C'-')%3B%0A%09p_enter()%3B%0A%09p_diamond(5%2C'%23')%3B%0A%09p_char(12%2C'-')%3B%0A%09p_enter()%3B%0A%09p_holRect(3%2C4%2C'%23')%3B%0A%09p_char(12%2C'-')%3B%0A%09p_enter()%3B%0A%09p_hui(7%2C10%2C'%23')%3B%0A%09p_char(12%2C'-')%3B%0A%09p_enter()%3B%0A%09%0A%7D%0A%60%60%60%0A!%5Bbd9da2f004dcb6b2f7c5eea66997b934.png%5D(evernotecid%3A%2F%2F0DB776D5-CFCE-4151-982A-C6EAEDC3EFEF%2Fappyinxiangcom%2F25749707%2FENResource%2Fp986)%0A%0A%0A</center></body></html>
