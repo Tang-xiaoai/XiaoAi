@@ -47,3 +47,18 @@ git config --global core.quotepath false
 git config --global core.excludesfile '外部文件绝对路径'
 ```
 
+## 问题3:本地仓库内容推送到无关联远程仓库
+
+问题描述：当远程创建了github仓库以后，本地自行创建了仓库(非clone生成)，这时如果要把本地仓库的内容推送到远程仓库，会要求先fetch，fetch后融合时，报错"fatal: refusing to merge unrelated histories".
+
+原因：因为不是clone生成的，本地仓库和远程仓库实际上是两个仓库，内容默认为不相关。
+
+解决办法：使用`--allow-unrelated-history`选项来解决问题（该选项可以合并两个独立启动仓库的历史）
+
+```
+git pull origin master --allow-unrelated-histories
+
+//或者fetch下来的分支，例如 远程别名remote_res 远程分支 remote_br
+git merge remote_res/remote_br --allow-unrelated-history
+```
+
