@@ -1,4 +1,7 @@
-[TOC]
+---
+typora-root-url: ../HTML&JS
+---
+
 [参考尚硅谷视频](http://www.atguigu.com/download_detail.shtml?v=63)
 
 [官方文档1](https://developer.mozilla.org/zh-CN/docs/Web/HTML)
@@ -508,7 +511,7 @@ id选择器        0,1,0,0
 
 ## CSS盒模型
 
-<img src="/Users/tangaihui/Documents/CSDN%E5%8D%9A%E5%AE%A2%E5%9B%BE%E7%89%87%E7%AD%89%E8%B5%84%E6%BA%90/11.0%20%E5%BF%AB%E9%80%9F%E5%AD%A6JS/CSS%E6%A1%86%E6%A8%A1%E5%9E%8B%E5%9B%BE.png" alt="CSS框模型图" style="zoom:30%;" />
+<img src="/HTML%E7%AC%94%E8%AE%B0.assets/CSS%E6%A1%86%E6%A8%A1%E5%9E%8B%E5%9B%BE.png" alt="CSS框模型图" style="zoom:30%;" />
 
 默认情况下，盒子可见框的大小由内容区、内边距和边框共同决定，当设置box-sizing属性时有所变化：
 
