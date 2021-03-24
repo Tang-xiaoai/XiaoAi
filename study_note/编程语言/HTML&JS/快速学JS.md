@@ -1,5 +1,3 @@
-[TOC]
-
 [参考视频](https://www.bilibili.com/video/BV1YW411T7GX)
 
 注：本博客代码内容是在2020版webstorm编写测试
@@ -834,7 +832,7 @@ var p2 = new Person3('p32');
 console.log(p1.sayName == p2.sayName);//true，说明两个对象的方法地址相同 
 ```
 
-# 数据结构
+# 内置对象
 
 ## 数组(Array)
 
@@ -1059,6 +1057,114 @@ arr.forEach(function(value , index , obj){
     });//遍历所有元素，空索引跳过 
 ```
 
+## Date对象
+
+在JS中使用Date对象来表示一个时间。
+
+### Date对象创建
+
+```javascript
+var d = new Date();
+console.log(d);//Tue Mar 02 2021 21:41:45 GMT+0800 (CST) 直接返回时间
+
+//指定时间，传递字符串，格式月份/日/年 时:分:秒
+var d2 = new Date("2/18/2021 11:10:30");
+console.log(d2);//Thu Feb 18 2021 11:10:30 GMT+0800 (CST)
+```
+
+### Date对象方法
+
+#### 获取指定时间信息
+
+getDate()：获取当前日期对象是几日。d.getDate()
+
+getDay()：获取当前日期对象时周几。0-6，从周日开始
+
+getMonth()：获取当前时间对象的月份。0-11，从一月开始
+
+getFullYear()：获取当前日期对象的年份。
+
+getTime()：获取当前日期对象的时间戳。从格林威治标准时间的1970年1月1日，0时0分0秒到当前日期所花费的毫秒数（1秒 = 1000毫秒）。
+
+```javascript
+    var d = new Date("1/1/1970 0:0:0");
+    time = d.getTime();
+    console.log(time);//-28800000,目前系统在东八区，以东八区为0，则结果为-8h
+```
+
+## Eval()
+
+eval()函数会将传入的字符串当做 JavaScript 代码进行执行。
+
+```js
+var num = eval("2+2");
+console.log(num);//4
+console.log(typeof(num));//number
+
+var obj = eval(new String("2+2"));
+console.log(obj);//[String: '2+2']
+```
+
+eval()可将特定字符串内容转换成JSON格式
+
+```js
+var str = `
+    {
+        "name": "LiLi",
+        "age": 22,
+        "sex": "F"
+    },
+    {
+        "name": "LaLa",
+        "age": 18,
+        "sex": "F"
+    }
+`;
+var json = eval('[' + str + ']');
+//为了避免将其当成{}代码块运行，需要在{}外包裹符号，例如()。
+//但又因为里面有两个{}，为了避免','运算符的运算，在{}包裹[]，使之成为两个json对象的数组
+```
+
+`eval()` 是一个危险的函数， 它使用与调用者相同的权限执行代码。如果`eval()` 运行的字符串代码被恶意方（不怀好意的人）修改，最终可能会在网页/扩展程序的权限下，在用户计算机上运行恶意代码。而且，运行性能较低(慢)。可以用[Function](#Function)替代。
+
+使用Function构造一个函数，将字符串作为程序代码参数传入。
+
+```js
+var json2 = (new Function('jsObj=['+str+'];return jsObj'))();
+console.log(json2);
+```
+
+- new Function('jsObj=['+str+'];return jsObj')，构造了一个函数，函数体内容为
+
+      jsObj=[{
+          "name": "LiLi",
+          "age": 22,
+          "sex": "F"
+      },
+      {
+          "name": "LaLa",
+          "age": 18,
+          "sex": "F"
+      }];
+      return jsObj
+
+- <font color='red'>(</font>new Function('jsObj=['+str+'];return jsObj')<font color='red'>)</font>将整个函数包裹，得到函数句柄**【原本 var fun1 = new Function(); 函数是有名的，如果函数只调用一次，为省命名空间或存储资源，用()包裹部分可理解为匿名函数的名】**
+- (new Function('jsObj=['+str+'];return jsObj'))<font color='red'>()</font>调用函数
+
+## Function
+
+每个 JavaScript 函数实际上都是一个 `Function` 对象。运行 `(function(){}).constructor === Function // true` 便可以得到这个结论。
+
+```js
+new Function ([arg1[, arg2,...argN],]functionBody)
+//[arg1[, arg2,...argN] 参数，逗号分隔
+//functionBody：一个含有包括函数定义的 JavaScript 语句的字符串
+```
+
+
+
+
+
 # JS知识点
 
 ## 原型
@@ -1121,7 +1227,7 @@ JS中拥有自动的垃圾回收机制，会自动将这些垃圾对象从内存
 
  
 
-# 重要对象
+# 浏览器隐含参数
 
 ## arguments对象
 
@@ -1140,43 +1246,6 @@ fun('hello','world');
 ```
 
 在调用函数时，浏览器每次都会传递进两个隐含的参数：[this](###this关键字)和arguments
-
-## Date对象
-
-在JS中使用Date对象来表示一个时间。
-
-### Date对象创建
-
-```javascript
-var d = new Date();
-console.log(d);//Tue Mar 02 2021 21:41:45 GMT+0800 (CST) 直接返回时间
-
-//指定时间，传递字符串，格式月份/日/年 时:分:秒
-var d2 = new Date("2/18/2021 11:10:30");
-console.log(d2);//Thu Feb 18 2021 11:10:30 GMT+0800 (CST)
-```
-
-### Date对象方法
-
-#### 获取指定时间信息
-
-getDate()：获取当前日期对象是几日。d.getDate()
-
-getDay()：获取当前日期对象时周几。0-6，从周日开始
-
-getMonth()：获取当前时间对象的月份。0-11，从一月开始
-
-getFullYear()：获取当前日期对象的年份。
-
-getTime()：获取当前日期对象的时间戳。从格林威治标准时间的1970年1月1日，0时0分0秒到当前日期所花费的毫秒数（1秒 = 1000毫秒）。
-
-```javascript
-    var d = new Date("1/1/1970 0:0:0");
-    time = d.getTime();
-    console.log(time);//-28800000,目前系统在东八区，以东八区为0，则结果为-8h
-```
-
- 
 
 # 包装类
 
@@ -2127,4 +2196,119 @@ p {
 ## 2.代码格式
 
 [JS代码格式 standardjs可参考](https://standardjs.com/)
+
+## 3.()、[]、{}的使用
+
+()：放置函数的参数、调整运算优先级。
+
+[]：1.表示定义一个数组，可理解为一个数组对象；2.用于数组读取元素
+
+{}：1.表示定义一个对象，内含成对的属性和值。2.表示代码块
+
+(){}：一般用于定义函数，例如function(形参){ 方法体 };
+
+({}):一般用于指定对象，尤其是对象有多个子对象组成时，为了避免JS将{}解析成代码块，所以在外层加了()。
+
+```js
+var obj = ({
+        "name": "A",
+        "age": 22,
+        "sex": "F"
+    }
+        , {
+        "name": "B",
+        "age": 33,
+        "sex": "F"
+    }
+);
+console.log(obj);//{ name: 'A', age: 33, sex: 'F' }，因为括号中先计算，','号运算符从左往右，所以obj == { name: 'A', age: 33, sex: 'F' }
+//如果想要两个对象，则需要将obj编程数组对象，([{xxx},{xxx}])或者[{xxx},{xxx}]
+```
+
+[{}]：对象数组，该数组的元素是对象
+
+```js
+var arr = [{name:'Tom'},{name:'Jerry'}];//arr数组有两个元素{name:'Tom'}和{name:'Jerry'}
+console.log(arr[0].name);//'Tom'
+```
+
+## 4.JSON和String转换
+
+[JSON和String转换我的CSDN博客链接](https://blog.csdn.net/FightingTang/article/details/115141567)
+
+### String转换成JSON (String内为单JSON对象)
+
+```js
+var querystring = require('querystring');
+var str = "a=b&c=d&e=f&h=g";
+
+var str1 = `
+{
+    "name": "11",
+    "age": 22,
+    "sex": "F"
+}
+`;
+//方式1 注意：字符串的属性名必须有引号，且为双引号，否则报错。得到的结果：非特殊属性名的无引号
+var json11 = JSON.parse(str1);
+
+//方式2 结果：非特殊属性名的无引号
+var json12 = eval('(' + str1 + ')');
+
+//方式3 结果：非特殊属性名的无引号
+var json13 = (function (obj) {
+    return Function('return (' + obj + ')')();
+})(str1);
+
+//方式4，将含&和=的字符串转换成JSON对象，&替换为,，=替换为:，属性名无引号，属性值全为字符串
+var json14 = querystring.parse(str);//需要导入querystring模块
+```
+
+### String转换成JSON (String内为多JSON对象)
+
+```js
+var str2 = `
+    {
+        "name": "LiLi",
+        "age": 22,
+        "sex": "F"
+    },
+    {
+        "name": "LaLa",
+        "age": 18,
+        "sex": "F"
+    }
+`;
+//方式1 注意：字符串的属性名必须有引号。得到的结果：非特殊属性名的无引号
+var json21 = JSON.parse('['+str2+']');
+
+//方式2 结果：非特殊属性名的无引号
+var json22 = eval('[' + str2 + ']');
+
+//方式3 结果：非特殊属性名的无引号
+var json23 = (function (obj) {
+    return Function('return [' + obj + ']')();
+})(str2);
+```
+
+### JSON转换成String
+
+```js
+var querystring = require('querystring');
+var str = "a=b&c=d&e=f&h=g";
+var json1 = ({ name: '11', age: 22, sex: 'F' });
+var json2 = querystring.parse(str);
+var json3 = [
+  { name: 'LiLi', age: 22, sex: 'F' },
+  { name: 'LaLa', age: 18, sex: 'F' }
+];
+//方式1 所有属性名加""，json的最外层加""
+var str11 = JSON.stringify(json1);
+var str21 = JSON.stringify(json2);
+var str31 = JSON.stringify(json3);
+```
+
+### 自定义函数
+
+自己封装两者转换的函数，待补充。。。
 
