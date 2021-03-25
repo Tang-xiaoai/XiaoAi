@@ -13,7 +13,11 @@
 `git add *.c`以.c结尾的文件添加到缓存区
 `git commit -m 'initial project <file>'`初始版本提交
 `git commit -m 'message'` 已追踪的文件修改后，跳过add直接commit
+
+`git commit -a -m 'message'` 所有已追踪的文件修改后跳过add直接提交。
+
 `git rm <file>`从已跟踪清单中移除，同时工作目录中删除。
+
 * rm从工作区删除文件后，git rm 记录此次移除文件的操作。
 
 `git rm --cached <file>`从暂存区删除，工作区还在。

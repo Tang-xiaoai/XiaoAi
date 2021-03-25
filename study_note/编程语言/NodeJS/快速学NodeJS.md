@@ -480,7 +480,14 @@ server.listen(8000,function () {
 });//绑定端口号后运行本文件即启动，这里可以把回调函数作为参数，用于启动时提示
 ```
 
-### 不同的url返回内容
+对象.on可以绑定事件，例如：
+
+- server.on('request',(req,res)=>{}); 是Server绑定了一个request事件，当收到request时，执行回调函数
+- request.on('data',(data)=>{}); 是request对象绑定了一个data事件，当request对象收到data数据时，执行回调函数
+- .on会一直监听该事件，.once只监听一次
+- 如果需要停止，则需要绑定'end'或'close'事件
+
+### 响应不同的url
 
 server.on持续监听requeset事件，要根据不同的request请求的url，response不同的内容，需要解析request的url信息。
 
@@ -562,13 +569,39 @@ response.setHeader("Refresh", "3;url=http://www.baidu.com");
 //response.writeHead(200,{"Refresh":"3;url=http://www.baidu.com"});
 ```
 
+## net模块
 
 
 
+## 输入与输出
+
+```js
+//输入
+const input = process.stdin;
+input.on('data', (chunk) => {
+    console.log(`接收到 ${chunk.length} 个字节的数据`);
+    console.log(chunk.toString());
+});//一直接收数据，回车一次响应一次，回车要算
+
+//输入
+var readLine = require('readline');
+
+var rs = readLine.createInterface({
+    input: process.stdin,
+    output: process.stdout
+});
+
+rs.question('输入提示:', (inputInfo) => {
+  console.log(inputInfo);
+  rs.close();
+});
+```
+
+# 常用第三方模块
 
 
 
-### 练习
+## 练习
 
 #### 1.简易Apache目录制作
 
@@ -577,6 +610,10 @@ response.setHeader("Refresh", "3;url=http://www.baidu.com");
 #### 2.留言板制作
 
 有index.html页面，点击可添加留言信息，点击发布则会在index.html页面显示。见“NodeJS练习_留言板制作”
+
+#### 3.多人实时聊天服务器
+
+
 
 ## 注意点
 
@@ -660,7 +697,7 @@ Content-Type 内容类型，text/plai表示普通文本[OS开源在线工具查�
 
 详见JS笔记注意点。
 
-### 7.post和get两种请求方式对比
+### 7.post和get两种请求方式对比(数据处理)
 
 get方式：表单数据提交后在url中，一般格式http://xxx/?name1=value1&name2=value2。
 
@@ -712,11 +749,15 @@ request.on('end',(err)=>{
 });
 ```
 
+### 8.与服务器交互的多种方式对比
 
+http服务
 
+http轮询
 
+comet
 
-
+socket
 
 
 
