@@ -62,3 +62,10 @@ git pull origin master --allow-unrelated-histories
 git merge remote_res/remote_br --allow-unrelated-history
 ```
 
+## 问题4:push时报错"non-fast-forward"
+
+问题描述：远程仓库origin和本地仓库local，原本两仓库同步版本(hash头)为452c7c3，远程仓库修改，版本往前推进d6c33cc，本地仓库也修改版本为b748f40，这时候本地仓库将内容push到远程时，报错。
+
+原因：两仓库版本推进路线分叉，两边内容都是新内容，无法确定以哪个为基准，所有报错。
+
+解决办法：pull远程仓库，统一后再push。【也可以将pull分两步，fetch+merge】
